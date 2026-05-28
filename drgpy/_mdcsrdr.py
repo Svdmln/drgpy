@@ -1,7 +1,8 @@
 import re
 from collections import defaultdict
 
-from pkg_resources import resource_filename as rscfn
+# from pkg_resources import resource_filename as rscfn
+from importlib.resources import files
 
 # dx_pttrn = "[A-TV-Z][0-9][0-9AB][0-9A-TV-Z]{0,4}"
 dx_pttrn = "[A-Z][0-9][0-9AB][0-9A-TV-Z]{0,4}"  # NOTE: COVID-19 starts with "U"
@@ -172,9 +173,10 @@ def read(fn, dxmap, prmap):
     _cursor = "F"
     cursor = "F"
     cache = {"A": "", "C": "", "D": "", "E": [], "_": defaultdict(dict), "L": {}}
-    fn = rscfn(__name__, fn)
-
-    with open(fn) as fp:
+    # fn = rscfn(__name__, fn)
+    package = __package__ or __name__.split('.')[0]
+    fn_path = files(package) / fn
+    with fn_path.open('r', encoding='utf-8') as fp:
         for line in fp:
             line = line.replace("\n", "")
 
